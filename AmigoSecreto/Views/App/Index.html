@@ -1,0 +1,138 @@
+{% extends "Base.html" %}
+
+{% block title %} Meus grupos {% endblock %}
+
+{% block styles %}
+<style>
+    header.position-absolute {
+        position: relative !important;
+        margin-bottom: 1rem;
+    }
+
+    @media screen and (min-width: 1200px) {
+        .card {
+            flex: 0 0 calc(33% - .25rem);
+            height: 100%;
+        }
+
+        .card-container {
+            height: 25rem;
+        }
+    }
+
+    @media screen and (min-width: 576px) and (max-width: 1200px) {
+        .card {
+            flex: 0 0 calc(50% - .5rem);
+            height: 25rem;
+        }
+    }
+
+    @media screen and (max-width: 576px) {
+        .card {
+            flex: 0 0 calc(100% - .5rem);
+            height: 25rem;
+        }
+    }
+
+    .banner {
+        width: calc(100% + 2rem);
+        height: 10.5rem;
+        margin: -1rem;
+
+        background-color: #DDD;
+    }
+
+    .grupo-info {
+        margin: .25rem 0;
+    }
+
+    p.grupo-info {
+        text-overflow: ellipsis;
+    }
+</style>
+{% endblock %}
+
+{% block header_links %}
+    <li class="nav-item d-sm-none d-block">
+        <a href="{% url 'criar_grupo' %}" class="nav-link">Criar novo sorteio</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-xl h-100 pb-1 d-flex flex-column">
+    <div class="d-flex flex-row mb-3">
+        <div class="d-flex flex-column flex-grow-1">
+            <h1>Olá, {{ request.user.username }}</h1>
+            <h3>Aqui estão seus sorteios</h3>
+        </div>
+        <div class="d-none d-sm-flex flex-row flex-grow-1 justify-content-end align-items-center">
+            <a href="{% url 'criar_grupo' %}" class="btn btn-lg btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                </svg>
+                Criar novo sorteio
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap card-container">
+        {% if sorteios %}
+            {% for sorteio in sorteios %}
+                <div class="card m-1">
+                    <div class="card-header pb-0">
+                        <h3 class="text-center">{{ sorteio.nome }}</h3>
+                    </div>
+                    <div class="card-body pb-0">
+                        {% if sorteio.banner %}
+                            <img src="/media/{{ sorteio.banner }}" class="banner mb-2" />
+                        {% else %}
+                            <div class="banner mb-3"></div>
+                        {% endif %}
+
+                        <div class="d-flex flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-event me-2 grupo-info" viewBox="0 0 16 16">
+                                <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                            <p class="overflow-hidden text-nowrap grupo-info">{{ sorteio.data_hora_sorteio }}</p>
+                        </div>
+
+                        <div class="d-flex flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building me-2 grupo-info" viewBox="0 0 16 16">
+                                <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
+                                <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
+                            </svg>
+                            <p class="overflow-hidden text-nowrap grupo-info">{{ sorteio.endereco }}</p>
+                        </div>
+
+                        <div class="d-flex flex-row">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-dollar me-2 grupo-info" viewBox="0 0 16 16">
+                                <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"/>
+                            </svg>
+                            <p class="mb-0 overflow-hidden text-nowrap grupo-info">{{ sorteio.preco_min }} &ndash; {{ sorteio.preco_max }}</p>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-center align-items-center">
+                        <a href="{% url 'grupo' sorteio.id %}" class="btn btn-primary">Ver sorteio</a>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% if sorteios|length >= 4 %}
+                <footer class="d-xl-block d-none" style="width: 100%; height: .25rem;"></footer>
+            {% endif %}
+        {% else %}
+            <div class="card m-1">
+                <div class="card-body pb-0 bg-light d-flex justify-content-center align-items-center">
+                    <p>
+                        Aqui apareceriam seus sorteios, mas você ainda não está incluído em nenhum. <br />
+                        <a href="{% url 'criar_grupo' %}">Crie um novo</a> ou entre em contato para ser incluído em algum sorteio já criado.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

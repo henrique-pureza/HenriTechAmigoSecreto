@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}{% endblock %} - HenriTech Amigo Secreto</title>
+
+        <link rel="stylesheet" href="{% static 'CSS/bootstrap.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'CSS/global.css' %}" />
+        {% block styles %}{% endblock %}
+
+        <script src="{% static 'JS/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'JS/jquery-3.7.1.min.js' %}"></script>
+    </head>
+    <body>
+        <header class="navbar navbar-expand-xl bg-primary {% if user.is_authenticated %} position-absolute {% else %} position-fixed {% endif %} z-1 text-white">
+            <nav class="container-xl">
+                {% if header_com_link %}
+                    {% if user.is_authenticated %}
+                        <button class="navbar-toggler ms-1 border-white" style="--bs-border-opacity: .1;" data-bs-toggle="offcanvas" data-bs-target="#navLinks" data-bs-theme="dark">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <a href="{% url 'app' %}" class="navbar-brand d-flex ms-3 fst-italic text-white flex-grow-1 flex-xl-grow-0">HenriTech Amigo Secreto</a>
+                        <div class="offcanvas offcanvas-start flex-xl-row justify-content-xl-end flex-xl-grow-1" id="navLinks">
+                            <div class="offcanvas-header pt-4">
+                                <h5 class="offcanvas-title ms-3" id="offcanvasNavbarLabel">HenriTech Amigo Secreto</h5>
+                                <button class="btn-close me-2" data-bs-dismiss="offcanvas"></button>
+                            </div>
+                            <div class="offcanvas-body align-items-center">
+                                <ul class="navbar-nav flex-grow-1 ps-3">
+                                    {% block header_links %}
+                                    {% endblock %}
+                                </ul>
+                            </div>
+                            <div class="d-flex mt-3 mt-xl-0 mb-4 mb-xl-0 me-0 flex-xl-grow-1 justify-content-xl-end" style="margin-left: 2rem;">
+                                <div class="user-dropdown" data-bs-theme="light">
+                                    <button class="btn dropdown-toggle d-flex flex-row user-dropdown-toggle" data-bs-toggle="dropdown">
+                                        <div class="d-flex align-items-center pe-1 me-2">
+                                            {% if perfil.foto %}
+                                                <img class="avatar" src="/media/{{ perfil.foto }}" />
+                                            {% else %}
+                                                <img class="avatar" src="/media/person-circle.svg" />
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <div class="d-flex flex-row ms-0">
+                                                <p class="m-0 nav-link user-info">{{ request.user.username }}</p>
+                                            </div>
+                                            <div class="d-flex flex-row ms-0">
+                                                <p class="m-0 nav-link user-info" style="font-size: .75rem !important;">{{ request.user.email }}</p>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'editar_usuario' %}">Editar perfil</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item danger" href="{% url 'logout' %}">Sair</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'index' %}" class="navbar-brand fst-italic text-white">HenriTech Amigo Secreto</a>
+                    {% endif %}
+                {% else %}
+                    <span class="navbar-brand fst-italic text-white">HenriTech Amigo Secreto</span>
+                {% endif %}
+            </nav>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        {% if header_com_link %}
+            <script>
+                $(document).ready(function() {
+                    var navLinkTransition = $(".nav-link").css("transition");
+
+                    if ($(window).outerWidth() < 1200) {
+                        $(".user-dropdown")         .addClass("dropup");
+                        $(".user-dropdown-toggle")  .addClass("btn-white");
+                        $(".nav-link")              .css("transition", "none");
+                        $(".navbar")                .attr("data-bs-theme", "light");
+                        $(".user-info")             .css("color", "#000");
+
+                        setTimeout(function() {
+                            $(".nav-link").css("transition", navLinkTransition);
+                        }, 175);
+                    } else {
+                        $(".user-dropdown")         .addClass("dropdown");
+                        $(".user-dropdown-toggle")  .addClass("btn-primary")
+                        $(".nav-link")              .css("transition", "none");
+                        $(".navbar")                .attr("data-bs-theme", "dark");
+                        $(".user-info")             .css("color", "#FFF");
+
+                        setTimeout(function() {
+                            $(".nav-link").css("transition", navLinkTransition);
+                        }, 175);
+                    }
+
+                    $(window).on("resize", function() {
+                        if ($(window).outerWidth() < 1200) {
+                            if ($(".user-dropdown-toggle").hasClass    ("btn-primary")) {
+                                $(".user-dropdown-toggle").addClass    ("btn-white");
+                                $(".user-dropdown-toggle").removeClass ("btn-primary");
+                            }
+
+                            if ($(".user-dropdown").hasClass    ("dropdown")) {
+                                $(".user-dropdown").addClass    ("dropup");
+                                $(".user-dropdown").removeClass ("dropdown");
+                            }
+
+                            $(".nav-link")  .css("transition", "none");
+                            $(".navbar")    .attr("data-bs-theme", "light");
+                            $(".user-info") .css("color", "#000");
+
+                            setTimeout(function() {
+                                $(".nav-link").css("transition", navLinkTransition);
+                            }, 175);
+                        } else {
+                            if ($(".user-dropdown-toggle").hasClass    ("btn-white")) {
+                                $(".user-dropdown-toggle").addClass    ("btn-primary");
+                                $(".user-dropdown-toggle").removeClass ("btn-white");
+                            }
+
+                            if ($(".user-dropdown").hasClass    ("dropup")) {
+                                $(".user-dropdown").addClass    ("dropdown");
+                                $(".user-dropdown").removeClass ("dropup");
+                            }
+
+                            $(".nav-link")  .css("transition", "none");
+                            $(".navbar")    .attr("data-bs-theme", "dark");
+                            $(".user-info") .css("color", "#FFF");
+
+                            setTimeout(function() {
+                                $(".nav-link").css("transition", navLinkTransition);
+                            }, 175);
+                        }
+                    });
+                });
+            </script>
+        {% endif %}
+    </body>
+</html>

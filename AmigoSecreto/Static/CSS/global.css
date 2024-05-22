@@ -1,0 +1,104 @@
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    src: url("/static/fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    src: url("/static/fonts/Roboto-Bold.ttf");
+}
+
+@font-face {
+    font-family: Roboto;
+    font-style: italic;
+    font-weight: normal;
+    src: url("/static/fonts/Roboto-Italic.ttf");
+}
+
+@font-face {
+    font-family: Roboto;
+    font-style: italic;
+    font-weight: bold;
+    src: url("/static/fonts/Roboto-BoldItalic.ttf");
+}
+
+html, body {
+    font-family: Roboto, Arial, sans-serif;
+
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+}
+
+html {
+    height: 100vh;
+}
+
+body {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+}
+
+header {
+    width: 100%;
+    height: 4rem;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+h1 {
+    font-size: 2rem !important;
+}
+
+h2 {
+    font-size: 1.8rem !important;
+}
+
+h3 {
+    font-size: 1.6rem !important;
+}
+
+h4 {
+    font-size: 1.4rem !important;
+}
+
+h5, .navbar-brand {
+    font-size: 1.2rem !important;
+}
+
+* {
+    font-size: 1rem !important; /* 1rem = 16px/16pt */
+}
+
+.avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    border-radius: 100%;
+}
+
+.user-info {
+    transition: none;
+}
+
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.dropdown-item.danger:active {
+    background-color: #dc3545;
+    color: #FFF;
+}

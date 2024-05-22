@@ -1,0 +1,11 @@
+{% extends 'Login/LoginBase.html' %}
+
+{% block title %} Página inicial {% endblock %}
+
+{% block login_content %}
+
+<h3 class="text-white text-shadow">HenriTech Amigo Secreto</h3>
+<h6 class="text-white text-shadow mb-3">O sorteio de amigo secreto mais completo</h6>
+<a href="{% url 'login' %}" class="btn btn-primary">Fazer login</a>
+
+{% endblock %}

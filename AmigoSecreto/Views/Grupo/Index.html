@@ -1,0 +1,295 @@
+{% extends "Base.html" %}
+
+{% block title %} {{ grupo.nome }} {% endblock %}
+
+{% block styles %}
+<style>
+    header.position-absolute {
+        position: relative !important;
+        margin-bottom: 1rem;
+    }
+
+    .sorteio-header {
+        {% if grupo.banner %}
+            color: #FFF;
+            text-shadow: .125rem .125rem .625rem #000;
+        {% endif %}
+
+        text-align: center;
+        position: relative;
+        width: 100%;
+        height: 12.5rem;
+    }
+
+    .header-image {
+        width: 100%;
+        height: 12.5rem;
+
+        {% if grupo.banner %}
+            position: absolute;
+            top: 0;
+            left: 0;
+        {% endif %}
+    }
+
+    .header-text {
+        position: absolute;
+        top: .8rem;
+    }
+
+    img.avatar {
+        background-color: #CCC;
+    }
+
+    .alerta-erro {
+        position: fixed;
+        left: 1rem;
+        bottom: 0;
+        z-index: 999;
+    }
+
+    @media screen and (max-width: 576px) {
+        .container-fluid {
+            padding: 0;
+        }
+
+        .header-text {
+            left: 0;
+        }
+
+        h5 {
+            font-size: 1rem !important;
+        }
+
+        .fs-1 {
+            font-size: 1.75rem !important;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        {% if usuario_logado.tipo == 2 %}
+            .sorteio-btn {
+                width: 50%;
+                height: 3.75rem;
+                margin-top: .25rem;
+                margin-bottom: 1rem;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        {% else %}
+            .sorteio-btn {
+                width: 100%;
+                margin-top: .25rem;
+                margin-bottom: 1rem;
+            }
+        {% endif %}
+    }
+</style>
+{% endblock %}
+
+{% block header_links %}
+    <li class="nav-item">
+        <a href="#" class="nav-link">Meu Amigo Secreto</a>
+    </li>
+    <li class="nav-item">
+        <a href="#" class="nav-link">Minha lista de presentes</a>
+    </li>
+    {% if usuario_logado.tipo == 2 %}
+        <li class="nav-item">
+            <a href="{% url 'editar_sorteio' grupo.id %}" class="nav-link">Editar o sorteio atual</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-xl h-100 d-flex flex-column">
+    {% if error %}
+        <div class="alert alert-danger alerta-erro">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header pl-sm-0 sorteio-header {% if not grupo.banner %} header-image {% endif %}">
+            {% if grupo.banner %}
+                <img src="/media/{{ grupo.banner }}" class="header-image rounded-top" />
+            {% endif %}
+            <div class="container-fluid header-text">
+                <h5>Sorteio</h5>
+                <h1 class="fs-1">{{ grupo.nome }}</h1>
+                <h5>{{ grupo.data_hora_sorteio }}</h5>
+                <h5>{{ grupo.endereco }}</h5>
+                <h5>R$ {{ grupo.preco_min }} - {{ grupo.preco_max }}</h5>
+            </div>
+        </div>
+        <div class="card-body pb-1">
+            <div class="row">
+                <div class="col">
+                    <h1>Participantes</h1>
+                </div>
+                <div class="col-md d-flex justify-content-md-end align-items-center">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="sair_do_grupo" />
+                        <input type="submit" class="btn btn-danger me-2 sorteio-btn" value="Sair do sorteio" />
+                    </form>
+                    {% if usuario_logado.tipo == 2 %}
+                        {% if participantes|length > 1 %}
+                            <form action="" method="post">
+                                <input type="hidden" name="action" value="sortear" />
+                                <input type="submit" class="btn btn-primary me-2" value="Sortear" />
+                            </form>
+                        {% endif %}
+                        <a href="{% url 'adicionar_participante' grupo.id %}" class="btn btn-secondary sorteio-btn">Adicionar participante</a>
+                    {% endif %}
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for participante in participantes %}
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row">
+                            <div class="d-flex align-items-center me-3">
+                                {% if participante.usuario.perfil.foto %}
+                                    <img class="avatar" src="/media/{{ participante.usuario.perfil.foto }}" />
+                                {% else %}
+                                    <img class="avatar" src="/media/person-circle.svg" />
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-grow-1 flex-column {% if participante.tipo != 2 %} justify-content-center {% endif %}">
+                                <p class="m-0">{{ participante.usuario.username }}</p>
+                                {% if participante.tipo == 2 %}
+                                    <p class="m-0" style="font-size: .75rem !important;">administrador</p>
+                                {% endif %}
+                            </div>
+                            {% if usuario_logado.tipo == 2 and participante.usuario.id != request.user.id %}
+                                <div class="dropdown">
+                                    <button class="btn btn-white dropdown-toggle" data-bs-toggle="dropdown">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-list fs-4" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            {% if participante.tipo == 2 %}
+                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#adminModal-{{ participante.id }}">Retirar da administração</button>
+                                            {% else %}
+                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#adminModal-{{ participante.id }}">Tornar admin</button>
+                                            {% endif %}
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <button class="dropdown-item danger" data-bs-toggle="modal" data-bs-target="#excluirModal-{{ participante.id }}">Remover participante</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <form method="post" action="" id="form-admin-{{ participante.id }}">
+                            <div class="modal fade" id="adminModal-{{ participante.id }}" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        {% if participante.tipo == 2 %}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirmação de decesso</h5>
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action"          value="remover_admin" />
+                                                <input type="hidden" name="participante"    value="{{ participante.id }}" />
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="m-0">Tem certeza de que deseja remover o participante {{ participante.usuario.username }} da administração do grupo?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input type="submit" class="btn btn-secondary" name="submit-btn" value="Cancelar" data-bs-dismiss="modal" />
+                                                <input type="submit" class="btn btn-primary"   name="submit-btn" value="Descender" />
+                                            </div>
+                                        {% else %}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirmação de promoção</h5>
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action"          value="promover_admin" />
+                                                <input type="hidden" name="participante"    value="{{ participante.id }}" />
+                                            </div>
+                                            <div class="modal-body">
+                                                <p class="m-0">Tem certeza de que deseja promover o participante {{ participante.usuario.username }} à administrador do grupo?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input type="submit" class="btn btn-secondary" name="submit-btn" value="Cancelar" data-bs-dismiss="modal" />
+                                                <input type="submit" class="btn btn-primary"   name="submit-btn" value="Promover" />
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form method="post" action="" id="form-delete-{{ participante.id }}" data-bs-backdrop="static">
+                            <div class="modal fade" id="excluirModal-{{ participante.id }}">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirmação de exclusão</h5>
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action"          value="deletar_participante" />
+                                            <input type="hidden" name="participante"    value="{{ participante.id }}" />
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class="m-0">Tem certeza de que deseja excluir {{ participante.usuario.username }} do grupo?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="submit" class="btn btn-secondary" name="submit-btn" value="Cancelar" data-bs-dismiss="modal" />
+                                            <input type="submit" class="btn btn-danger"    name="submit-btn" value="Excluir" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <script>
+                            $(document).ready(function() {
+                                var botaoClicado;
+
+                                $("input[type='submit']").on("click", function() {
+                                    botaoClicado = this.value;
+                                });
+
+                                $("#form-delete-{{ participante.id }}").on("submit", function(e) {
+                                    e.preventDefault();
+
+                                    if (botaoClicado == "Excluir") {
+                                        this.submit();
+                                    }
+                                });
+
+                                $("#form-admin-{{ participante.id }}").on("submit", function(e) {
+                                    e.preventDefault();
+
+                                    if (botaoClicado == "Promover" || botaoClicado == "Descender") {
+                                        this.submit();
+                                    }
+                                });
+                            });
+                        </script>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($(".alerta-erro")) {
+            setTimeout(function() {
+                $(".alerta-erro").hide();
+            }, 3000);
+        }
+    });
+</script>
+
+{% endblock %}
