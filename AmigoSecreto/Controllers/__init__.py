@@ -26,12 +26,12 @@ class TiposDeUsuarios:
     Participante    = 3
 
 @RenderStaticFilesInline
-def Render(request: HttpRequest, template_name: str, context: dict[str, Any], cssSources: list[str], jsSources: list[str], *a, **kw) -> HttpResponse:
-    ctx         = context.copy()
+def Render(request: HttpRequest, template_name: str, context: dict[str, Any] | None = None, *, cssSources: list[str], jsSources: list[str]) -> HttpResponse:
+    ctx         = (context or {}).copy()
     ctx["CSS"]  = cssSources
     ctx["JS"]   = jsSources
 
-    return render(request, template_name, ctx, *a, **kw)
+    return render(request, template_name, ctx)
 
 from .AppControllers   import AppController, CriarGrupoController, EditarUsuarioController
 from .LoginControllers import IndexController, LoginController, RecuperarSenhaController, CadastrarController, RedefinirSenhaController, LogoutController
