@@ -1,33 +1,5 @@
-@font-face {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    src: url("/static/fonts/Roboto-Regular.ttf");
-}
-
-@font-face {
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    src: url("/static/fonts/Roboto-Bold.ttf");
-}
-
-@font-face {
-    font-family: Roboto;
-    font-style: italic;
-    font-weight: normal;
-    src: url("/static/fonts/Roboto-Italic.ttf");
-}
-
-@font-face {
-    font-family: Roboto;
-    font-style: italic;
-    font-weight: bold;
-    src: url("/static/fonts/Roboto-BoldItalic.ttf");
-}
-
 html, body {
-    font-family: Roboto, Arial, sans-serif;
+    font-family: Arial, sans-serif;
 
     margin: 0;
     padding: 0;

@@ -41,7 +41,7 @@
         background-color: #CCC;
     }
 
-    .alerta-erro {
+    .alerta {
         position: fixed;
         left: 1rem;
         bottom: 0;
@@ -107,8 +107,14 @@
 
 <div class="container-xl h-100 d-flex flex-column">
     {% if error %}
-        <div class="alert alert-danger alerta-erro">
+        <div class="alert alert-danger alerta">
             {{ error }}
+        </div>
+    {% endif %}
+
+    {% if mensagem %}
+        <div class="alert alert-success alerta">
+            {{ mensagem }}
         </div>
     {% endif %}
 
@@ -139,6 +145,7 @@
                     {% if usuario_logado.tipo == 2 %}
                         {% if participantes|length > 1 %}
                             <form action="" method="post">
+                                {% csrf_token %}
                                 <input type="hidden" name="action" value="sortear" />
                                 <input type="submit" class="btn btn-primary me-2" value="Sortear" />
                             </form>
@@ -178,6 +185,9 @@
                                             {% else %}
                                                 <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#adminModal-{{ participante.id }}">Tornar admin</button>
                                             {% endif %}
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'adicionar_restricao' grupo.id %}?presenteador={{ participante.id }}" class="dropdown-item">Adicionar restrição</a>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider" />
@@ -284,9 +294,9 @@
 
 <script>
     $(document).ready(function() {
-        if ($(".alerta-erro")) {
+        if ($(".alerta")) {
             setTimeout(function() {
-                $(".alerta-erro").hide();
+                $(".alerta").hide();
             }, 3000);
         }
     });

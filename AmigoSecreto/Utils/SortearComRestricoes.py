@@ -28,6 +28,16 @@ from random import choice
 # }
 
 def SortearComRestricoes(participantes: list, restricoes: dict[str, list[str]]) -> dict[str, str]:
+    """
+    ### SortearComRestricoes
+
+    Faz um sorteio de Amigo Secreto levando em conta que certas pessoas não podem tirar determinados participantes.
+
+    :param participantes (list) - Uma lista de strings com o nome dos participantes do sorteio.
+    :param restricoes (dict[str, list[str]]) - Um dicionário cuja chave é um participante e o valor é uma lista de participantes restritos.
+
+    :return (dict[str, str]) - Um dicionário cujas chaves são os presenteadores e os valores, os presenteados.
+    """
     sorteio = {}
 
     participantes_iterable = participantes.copy()
@@ -56,5 +66,3 @@ def SortearComRestricoes(participantes: list, restricoes: dict[str, list[str]]) 
             participantes_iterable.remove(presenteado)
 
     return sorteio
-
-# sorteio = sortear_com_restricoes(participantes, restricoes)

@@ -67,7 +67,52 @@ class GrupoIndexController(View):
                 participante.delete()
                 return Redirect("/app/")
         elif action == "sortear":
+            perfil          = Perfil        .objects  .filter(usuario=request.user)                                             .first()
             grupo           = Grupo         .objects  .filter(id=id)                                           .first()
             participantes   = Participante  .objects  .filter(grupo__id=id).select_related("usuario__perfil")  .all()
+            usuario_logado  = Participante  .objects  .filter(usuario__id=request.user.id)                     .first()
+            # restricoes      = Restricao     .objects  .filter(grupo__id=id)                                    .all()
+
+            # if restricoes:
+            #     pass
+            # else:
+            sorteio = SortearSemRestricoes([str(participante) for participante in participantes])
+
+            with Transaction.atomic():
+                for presenteador, presenteado in sorteio.items():
+                    sorteio              = Sorteio()
+                    sorteio.grupo        = grupo
+                    sorteio.presenteador = Participante.objects.filter(usuario__username=presenteador).first()
+                    sorteio.presenteado  = Participante.objects.filter(usuario__username=presenteado).first()
+
+                    sorteio.save()
+
+            participantes = list(participantes)
+            if usuario_logado.tipo == 2 and len(participantes) > 1:
+                participantes.remove(usuario_logado)
+                participantes.insert(0, usuario_logado)
+            else:
+                i = 0
+                for participante in participantes:
+                    old_i = participantes.index(participante)
+
+                    if participante.tipo == 2:
+                        participantes.insert(i, participante)
+                        participantes.pop(old_i + 1)
+
+                        i += 1
+
+            return Render(
+                request,
+                "Grupo/Index.html",
+                {
+                    "grupo": grupo,
+                    "participantes": participantes,
+                    "usuario_logado": usuario_logado,
+                    "header_com_link": True,
+                    "perfil": perfil,
+                    "mensagem": 'Sorteio realizado com sucesso! Clique em "Meu Amigo Secreto" na barra de título para saber quem você tirou.'
+                }
+            )
 
         return Redirect("/grupo/" + str(id))

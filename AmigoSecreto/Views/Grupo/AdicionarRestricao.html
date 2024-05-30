@@ -1,0 +1,67 @@
+{% extends "Base.html" %}
+
+{% block title %} Adicionar restrição no sorteio do participante "{{ grupo.nome }}" {% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center flex-column w-100 h-100 position-absolute">
+    <div class="card">
+        <form action="" method="post">
+            <div class="card-header text-center">
+                <h3 class="m-0">Adicionar restrição no sorteio do participante {{ presenteador }}</h3>
+            </div>
+            <div class="card-body pb-0">
+                {% csrf_token %}
+
+                <h5>Escolha um ou mais participantes para que {{ presenteador }} não tire</h5>
+
+                {% if erro %}
+                    <div class="alert alert-danger">
+                        {{ erro }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    {% if field == form.presenteado %}
+                        <div class="mb-3">
+                            <label
+                                for="select-restricao"
+                                id="select-restricao-label"
+                                class="form-label"
+                            >
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="card-footer d-flex justify-content-center align-items-center">
+                <a href="{% url 'grupo' grupo.id %}" class="btn btn-secondary me-1">Cancelar</a>
+                <input
+                    type="submit"
+                    value="Adicionar"
+                    class="btn btn-primary"
+                />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#checkbox-restricao").on("change", function(e) {
+            if (e.target.checked) {
+                $("#select-restricao").show();
+                $("#select-restricao-label").show();
+            } else {
+                $("#select-restricao").hide();
+                $("#select-restricao-label").hide();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

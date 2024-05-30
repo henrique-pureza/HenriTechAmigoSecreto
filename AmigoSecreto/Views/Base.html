@@ -6,12 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{% block title %}{% endblock %} - HenriTech Amigo Secreto</title>
 
-        <link rel="stylesheet" href="{% static 'CSS/bootstrap.min.css' %}" />
-        <link rel="stylesheet" href="{% static 'CSS/global.css' %}" />
+        <style>
+            {% for cssSource in CSS %}
+                {{ cssSource|safe }}
+            {% endfor %}
+        </style>
+
         {% block styles %}{% endblock %}
 
-        <script src="{% static 'JS/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'JS/jquery-3.7.1.min.js' %}"></script>
+        <script>
+            {% for jsSource in JS %}
+                {{ jsSource|safe }}
+            {% endfor %}
+        </script>
     </head>
     <body>
         <header class="navbar navbar-expand-xl bg-primary {% if user.is_authenticated %} position-absolute {% else %} position-fixed {% endif %} z-1 text-white">

@@ -8,6 +8,7 @@ urlpatterns = [
     path('',        include("AmigoSecreto.Routes.LoginRoutes")),
     path('app/',    include("AmigoSecreto.Routes.AppRoutes")),
     path('grupo/',  include("AmigoSecreto.Routes.GrupoRoutes"))
-]\
-+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)\
-+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

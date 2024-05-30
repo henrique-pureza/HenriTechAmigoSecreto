@@ -1,9 +1,9 @@
 from AmigoSecreto.Models import *
 
 class Restricao(Model):
-    grupo        = ManyToManyField ( Grupo, related_name="restricao_grupo"        )
-    presenteador = ManyToManyField ( User,  related_name="restricao_presenteador" )
-    presenteado  = ManyToManyField ( User,  related_name="restricao_presenteado"  )
+    grupo        = ForeignKey ( Grupo,          related_name="restricao_grupo"       , on_delete=CASCADE, null=False)
+    presenteador = ForeignKey ( Participante,   related_name="restricao_presenteador", on_delete=CASCADE, null=False)
+    presenteado  = ForeignKey ( Participante,   related_name="restricao_presenteado" , on_delete=CASCADE, null=False)
 
     def __str__(self):
-        return f"{self.presenteador.username} não pode tirar {self.presenteado.username}"
+        return f"{self.presenteador.usuario.username} não pode tirar {self.presenteado.usuario.username}"
