@@ -35,4 +35,4 @@ def Render(request: HttpRequest, template_name: str, context: dict[str, Any] | N
 
 from .AppControllers   import AppController, CriarGrupoController, EditarUsuarioController
 from .LoginControllers import IndexController, LoginController, RecuperarSenhaController, CadastrarController, RedefinirSenhaController, LogoutController
-from .GrupoControllers import EditarGrupoController, GrupoIndexController, AdicionarParticipanteController, AdicionarRestricaoController
+from .GrupoControllers import EditarGrupoController, GrupoIndexController, AdicionarParticipanteController, AdicionarRestricaoController, MeuAmigoController

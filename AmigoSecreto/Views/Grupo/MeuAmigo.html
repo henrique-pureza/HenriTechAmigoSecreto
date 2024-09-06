@@ -1,0 +1,26 @@
+{% extends "Base.html" %}
+
+{% block title %} Meu amigo {% endblock %}
+
+{% block header_links %}
+    <li class="nav_item">
+        <a href="{% url 'grupo' grupo.id %}" class="nav-link">Voltar ao sorteio</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-xl h-100 d-flex flex-column">
+    <div class="card">
+        <div class="card-header">
+            <h3>Seu Amigo Secreto é</h3>
+            <hr />
+            <h2>Fulano de Tal</h2>
+        </div>
+        <div class="card-body">
+            <p>Seu amigo quer ganhar</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
